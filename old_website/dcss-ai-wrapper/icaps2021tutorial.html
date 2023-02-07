@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DCSS-AI-Wrapper ICAPS 2021 Tutorial</title>
+</head>
+<body>
+
+<h1>Hands-on Introduction to DCSS-AI-Wrapper</h1>
+<h3>An Introductory Tutorial at ICAPS 2021</h3>
+
+<hr/>
+<p align="center">
+    <a href="#intro">Introduction</a> |
+    <a href="#schedule">Schedule</a> |
+</p>
+<hr/>
+
+<h2><a name="intro">Introduction</a></h2>
+
+<p><b>dcss-ai-wrapper</b> aims to enable the Dungeon Crawl Stone Soup (DCSS) video game to be used as a new benchmark for AI research. While more traditional planning benchmarks exist (i.e. IPC domains) and more traditional RL benchmarks exist (i.e. open-ai gym), it is often difficult to compare an RL agent on IPC domains or a planner on RL domains. DCSS is a complex domain that has built-in support for both automated planning and RL, as well as other properties that make it worthwhile to study.</p>
+
+<p>Dungeon Crawl Stone Soup is a single-player, free, and open-source rogue-like turn-based video game that consists of a procedurally generated 2-dimensional grid world. To win the game, a player must navigate their character through a series of levels to collect `The Orb of Zot' and then return to the starting location. Along the way, the player encounters a wide variety of monsters and items. Players equip and use items to make themselves stronger or consume them to aid in difficult situations. The DCSS environment is dynamic, stochastic, partially observable, and complex with the number of instantiated actions the player may take reaching into the hundreds.
+</p>
+
+<p>dcss-ai-wrapper is the first AI-friendly API designed to enable planning-based agents to play Dungeon Crawl Stone Soup. In this tutorial we will guide participants through multiple live-coding exercises, providing them with the hands-on experience needed to apply their own custom planning algorithms and techniques to control an agent in DCSS for AI research.
+</p>
+
+<h2><a name="schedule">Schedule</a></h2>
+
+<p>
+The main objective of this tutorial is to provide a hands-on tutorial of the software. By the end of the tutorial, the attendees will be able to install the game / API wrapper, understand various API functionalities, be able to run sample Automated Planning and Reinforcement Learning agents, and understand the experimental metrics that can be used. We propose a 3 hour tutorial with the following schedule.
+
+    <ul>
+    <li>-1 week: Provide attendees will setup videos to ensure no day-of configuration issues</li>
+    <li>-2 hr to Tutorial Start: Open session to ensure attendee’s environments are properly configured</li>
+    <li>Tutorial Start Time - 30 min: Introductory Lecture to the DCSS Game and the API</li>
+    <li>30 min - 1 hr: Learning objective #1 - Get a classical planning agent (using Fastdownward) running in the game</li>
+    <li>1.0 hr  to 1.5 hr: Learning objective #2 - Obtain and visualize data about the performance of the planning agent against other baseline agents</li>
+    <li>1.5 hr to 2.0 hr: Learning objective #3 - Extend the planning agent with more goal types, including attacking monsters and picking up items.</li>
+    <li>2.0 hr - Tutorial End: Extra Credit Exercises:</li>
+    <ul>
+        <li>Extend the planning agent with goals and other behaviors to see how far it can travel in the dungeon before dying</li>
+    <li>Customize PDDL knowledge for an alternative planner to FastDownward</li>
+    </ul>
+</ul>
+
+
+
+</body>
+</html>
