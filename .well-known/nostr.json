@@ -1,5 +1,8 @@
 {
   "names": {
     "dustind": "da18e9860040f3bf493876fc16b1a912ae5a6f6fa8d5159c3de2b8233a0d9851",
+  },
+  "relays": {
+    "da18e9860040f3bf493876fc16b1a912ae5a6f6fa8d5159c3de2b8233a0d9851": ["wss://nos.lol/", "wss://nostr.wine/", "wss://relay.damus.io/", "wss://relay.snort.social/", "wss://eden.nostr.land/", "wss://nostr.gocharlie.ai/" ]
   }
 }
