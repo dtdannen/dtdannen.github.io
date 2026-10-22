@@ -21,7 +21,8 @@ class Page(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
-        if tag in {"head", "script", "style"} or (tag == "a" and "data-a11y" in attrs):
+        # Captions are new copy with no baseline counterpart.
+        if tag in {"head", "script", "style", "figcaption"} or (tag == "a" and "data-a11y" in attrs):
             self.hidden.append(tag)
         if self.hidden:
             return
@@ -70,7 +71,8 @@ def check(source_path, preview_path, baseline):
     new_links = Counter(destination(href, preview_path) for href in preview.links)
     assert not (old_links - new_links), f"Links changed in {preview_path}: {old_links - new_links}"
     extras = new_links - old_links
-    assert all(url.startswith("mailto:") for url in extras), f"Unexpected links in {preview_path}: {extras}"
+    header_links = {"https://github.com/dtdannen", "https://www.linkedin.com/in/dustindannenhauer"}
+    assert all(url.startswith("mailto:") or url in header_links for url in extras), f"Unexpected links in {preview_path}: {extras}"
     for href in original.links:
         if href.startswith("#"):
             assert href[1:] in preview.anchors, f"Missing anchor in {preview_path}: {href}"

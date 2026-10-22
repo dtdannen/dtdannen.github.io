@@ -11,7 +11,6 @@ p { text-wrap: pretty; }
 ul { padding: 0; margin: 0; list-style: none; }
 li, p, h1, h2, h3, a { overflow-wrap: break-word; }
 .site-header, .hero, .content, .site-footer, .tutorial-hero { min-width: 0; }
-.brand-mark { width: 32px; height: 32px; flex: none; }
 .section-nav { display: flex; flex-wrap: wrap; }
 .section-nav a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
 .email { display: inline-flex; align-items: center; gap: 1rem; max-width: 100%; min-height: 44px; overflow-wrap: anywhere; }
@@ -55,7 +54,6 @@ body { background: var(--paper); color: var(--ink); }
 ::selection { background: #dfbfa7; color: #262722; }
 .site-shell { width: min(100% - 112px, 1320px); margin-inline: auto; }
 .site-header { position: sticky; top: 0; z-index: 10; background: var(--paper); display: flex; align-items: center; justify-content: space-between; min-height: 106px; border-bottom: 1px solid var(--line); }
-.brand-mark { color: var(--accent); }
 .section-nav { gap: 32px; font-size: 0.8125rem; }
 .section-nav a { position: relative; color: var(--muted); }
 .section-nav a:hover, .section-nav a[aria-current] { color: var(--ink); }
@@ -112,9 +110,10 @@ body { background: var(--paper); color: var(--ink); }
 .linkedin-link { margin-top: 20px; }
 .archive-list li { display: grid; grid-template-columns: 56px 1fr; gap: 22px; padding-block: 16px; border-bottom: 1px solid var(--line); }
 .archive-list b { font-size: 0.75rem; color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; padding-top: 3px; }
-.panel-photo { width: 100%; margin-block: 26px; outline: 1px solid rgb(0 0 0 / .1); outline-offset: -1px; }
+.panel-figure { margin: 26px 0; }
+.panel-figure figcaption { margin-top: 10px; text-align: center; color: var(--muted); font-size: 0.8125rem; }
+.panel-photo { width: 100%; display: block; outline: 1px solid rgb(0 0 0 / .1); outline-offset: -1px; }
 .site-footer { display: flex; justify-content: space-between; align-items: center; padding-block: 32px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.6875rem; }
-.site-footer .brand-mark { width: 24px; height: 24px; }
 .tutorial-hero h1 { font-family: "Iowan Old Style", Georgia, serif; }
 @media (min-width: 1600px) { .hero { padding-block: 110px 120px; } }
 @media (max-width: 1050px) {
@@ -126,7 +125,6 @@ body { background: var(--paper); color: var(--ink); }
 @media (max-width: 760px) {
   .site-shell { width: calc(100% - 40px); }
   .site-header { min-height: 84px; gap: 20px; }
-  .site-header .brand-mark { width: 25px; height: 25px; }
   .section-nav { gap: 2px 17px; justify-content: flex-end; font-size: 0.75rem; }
   .section-nav a { min-height: 44px; }
   .hero { grid-template-columns: minmax(0, 1fr) 90px; gap: 24px; padding-block: 48px; align-items: start; }
@@ -169,3 +167,8 @@ body { background: var(--paper); color: var(--ink); }
   .menu-enabled .section-nav a:focus-visible { outline-offset: -3px; }
   .menu-enabled .section-nav a[aria-current]::after { display: none; }
 }
+.brand-links { display: flex; gap: 4px; margin-left: -12px; }
+.brand-links a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: var(--muted); }
+.brand-links a:hover { color: var(--accent); }
+.brand-links svg { width: 20px; height: 20px; fill: currentColor; stroke: none; }
+.content-section h2 { overflow-wrap: normal; }
