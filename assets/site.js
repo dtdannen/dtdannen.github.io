@@ -36,3 +36,49 @@ if (header && 'ResizeObserver' in window) {
     }
   }).observe(header);
 }
+
+const toggle = document.querySelector('.menu-toggle');
+const navigation = document.querySelector('.section-nav');
+if (header && toggle && navigation) {
+  const compact = window.matchMedia('(max-width: 60rem)');
+  const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+  const setOpen = open => {
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+  };
+
+  toggle.addEventListener('click', () => setOpen(!isOpen()));
+  header.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && isOpen()) {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+  for (const link of links) {
+    link.addEventListener('click', event => {
+      if (!compact.matches || !isOpen() || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      setOpen(false);
+      const target = document.querySelector(link.hash);
+      target?.setAttribute('tabindex', '-1');
+      target?.focus({ preventScroll: true });
+    });
+  }
+  document.addEventListener('pointerdown', event => {
+    if (isOpen() && !header.contains(event.target)) {
+      setOpen(false);
+      if (navigation.contains(document.activeElement)) toggle.focus();
+    }
+  });
+  document.addEventListener('focusin', event => {
+    if (isOpen() && !header.contains(event.target)) setOpen(false);
+  });
+  compact.addEventListener('change', () => {
+    setOpen(false);
+    if (!compact.matches && document.activeElement === toggle) links[0]?.focus();
+    else if (compact.matches && navigation.contains(document.activeElement)) toggle.focus();
+  });
+
+  // Progressive enhancement: without JavaScript, every navigation link stays visible.
+  toggle.hidden = false;
+  header.classList.add('menu-enabled');
+}
