@@ -1,12 +1,15 @@
 /* Writing section — article and index styling. Pairs with assets/site.css,
    which supplies the palette, layout shell and header/footer. */
 
+.header-brand { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.header-brand .brand-links { margin-right: 2px; }
 .wordmark {
   font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   font-size: 1.0625rem;
   letter-spacing: -.03em;
   text-decoration: none;
   color: var(--ink);
+  white-space: nowrap;
 }
 .wordmark:hover { color: var(--accent); }
 
@@ -178,9 +181,11 @@
 .post-back a:hover { color: var(--accent); }
 
 @media (max-width: 760px) {
-  .site-header { flex-wrap: wrap; min-height: 0; padding-block: 10px 6px; row-gap: 2px; }
-  .wordmark { flex: 1 0 100%; }
-  .section-nav { width: 100%; gap: 0 18px; font-size: 0.75rem; }
+  /* No-JS fallback only: with the menu script active, site.css's disclosure
+     button takes over and the header stays a single row. */
+  .site-header:not(.menu-enabled) { flex-wrap: wrap; min-height: 0; padding-block: 10px 6px; row-gap: 2px; }
+  .site-header:not(.menu-enabled) .header-brand { flex: 1 0 100%; }
+  .site-header:not(.menu-enabled) .section-nav { width: 100%; gap: 0 16px; font-size: 0.75rem; }
   .post { padding-block: 28px 40px; }
   .writing-list li { grid-template-columns: 1fr; gap: 4px; padding-block: 16px; }
   .writing-list time { padding-top: 0; }
