@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Write and Publish a Wiki Event using Nak | Dustin Dannenhauer</title>
+<meta name="description" content="Short tutorial explaining how to publish wiki articles via the command line tool nak">
+<meta name="author" content="Dustin Dannenhauer">
+<link rel="canonical" href="https://dtdannen.github.io/writing/how-to-write-and-publish-a-wiki-event-using-nak.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Write and Publish a Wiki Event using Nak">
+<meta property="og:description" content="Short tutorial explaining how to publish wiki articles via the command line tool nak">
+<meta property="og:url" content="https://dtdannen.github.io/writing/how-to-write-and-publish-a-wiki-event-using-nak.html">
+<meta property="og:image" content="https://dtdannen.github.io/assets/writing/how-to-write-and-publish-a-wiki-event-using-nak-header.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/writing.css">
+</head>
+<body class="editorial"><a class="skip-link" href="#main">Skip to content</a>
+<div class="site-shell">
+<header class="site-header">
+<a class="wordmark" href="../index.html">Dustin Dannenhauer</a>
+<nav id="section-navigation" class="section-nav" aria-label="Sections"><a href="index.html" aria-current="page">Writing</a><a href="../index.html#about">About</a><a href="../index.html#publications">Publications</a><a href="mailto:dustin@delegance.ai">Contact</a></nav>
+</header>
+<main id="main">
+<article class="post">
+<header class="post-head">
+<p class="post-meta"><time datetime="2025-04-04">4 April 2025</time> · 2 min read</p>
+<h1>How to Write and Publish a Wiki Event using Nak</h1>
+<p class="post-summary">Short tutorial explaining how to publish wiki articles via the command line tool nak</p>
+</header>
+<figure class="post-image"><img src="../assets/writing/how-to-write-and-publish-a-wiki-event-using-nak-header.webp" alt="" width="1024" height="1024" fetchpriority="high"></figure>
+<div class="prose">
+<p>I&rsquo;m making this tutorial for myself, as I plan to write many wiki pages describing DVM kinds, as a resource for DVMDash. </p>
+<p>Wiki pages on Nostr are written using AsciiDoc. If you don&rsquo;t know ascii doc, get an LLM (like <a href="https://duck.ai">https://duck.ai</a>) to help you format into the right syntax.</p>
+<p>Here&rsquo;s the test wiki page I&rsquo;m going to write:</p>
+<pre><code>= Simple AsciiDoc Demo
+
+This is a simple demonstration of AsciiDoc syntax for testing purposes. 
+
+== Features
+
+AsciiDoc offers many formatting options that are easy to use. 
+
+* Easy to learn 
+* Supports rich text formatting 
+* Can include code snippets 
+* Works great for documentation 
+
+[source,json] 
+---- 
+{ &quot;name&quot;: &quot;Test&quot;, &quot;version&quot;: &quot;1.0&quot;, &quot;active&quot;: true } 
+----
+</code></pre>
+<h1 id="were-going-to-use-nak-to-publish-it">We&rsquo;re going to use nak to publish it</h1>
+<p>First, install <code>nak</code> if you haven&rsquo;t already</p>
+<pre><code>go install github.com/fiatjaf/nak@latest
+</code></pre>
+<p><em>Note: if you don&rsquo;t use Go a lot, you may need to first install it and then add it to your path so the <code>nak</code> command is recognized by the terminal</em></p>
+<pre><code># this is how to add it to your path on mac if using zsh
+echo 'export PATH=$PATH:$(go env GOPATH)/bin' &gt;&gt; ~/.zshrc
+</code></pre>
+<p>And here&rsquo;s how to sign and publish this event with nak.</p>
+<p><em>First, if you want to use your own nostr sec key, you can set the env variable to it and nak will use that if no secret key is specified</em></p>
+<pre><code># replace with your full secret key
+export NOSTR_SECRET_KEY=&quot;nsec1zcdn...&quot;
+</code></pre>
+<p>Now to sign and publish the event:</p>
+<p><em>Note: inner double quotes need to be escaped with a <code>\</code> before them in order to keep the formatting correct, because we&rsquo;re doing this in the terminal</em></p>
+<pre><code>nak event -k 30818 -d &quot;dvm-wiki-page-test&quot; -t 'title=dvm wiki page test'  -c &quot;= Simple AsciiDoc Demo\n\nThis is a simple demonstration of AsciiDoc syntax for testing purposes. \n\n== Features\n\nAsciiDoc offers many formatting options that are easy to use. \n\n* Easy to learn \n* Supports rich text formatting \n* Can include code snippets \n* Works great for documentation \n\n[source,json] \n---- \n{ \&quot;name\&quot;: \&quot;Test\&quot;, \&quot;version\&quot;: \&quot;1.0\&quot;, \&quot;active\&quot;: true } \n----&quot; wss://relay.primal.net wss://relay.damus.io wss://relay.wikifreedia.xyz
+</code></pre>
+<p>You&rsquo;ve now published your first wiki page! If done correctly, it will show up on wikistr.com, like mine did here: <a href="https://wikistr.com/dvm-wiki-page-test*da18e9860040f3bf493876fc16b1a912ae5a6f6fa8d5159c3de2b8233a0d9851">https://wikistr.com/dvm-wiki-page-test*da18e9860040f3bf493876fc16b1a912ae5a6f6fa8d5159c3de2b8233a0d9851</a> </p>
+<p>and on wikifreedia.xyz <a href="https://wikifreedia.xyz/dvm-wiki-page-test/dustind@dtdannen.github.io">https://wikifreedia.xyz/dvm-wiki-page-test/dustind@dtdannen.github.io</a></p>
+</div>
+<footer class="post-foot">
+<p class="post-provenance">Nostr long-form event <code>3e7580a2946e…</code> · first published 4 April 2025</p>
+<ul class="post-tags"><li>wiki</li><li>documentation</li><li>nak</li></ul>
+<p class="post-back"><a href="index.html">← All writing</a></p>
+</footer>
+</article>
+</main>
+<footer class="site-footer"><p>Originally published on Nostr; archived here so it can be read and cited.</p><p>Last Updated: November 2026</p></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DVMDash Update: New Architecture and Stats App Launch | Dustin Dannenhauer</title>
+<meta name="description" content="DVMDash is back with a completely rebuilt architecture, launching first with a new Stats app that provides flexible time-based metrics and network activity visualization for the DVM ecosystem. This update marks the first phase of a larger redesign that will soon bring back debugging tools and add a new playground for DVM interaction.">
+<meta name="author" content="Dustin Dannenhauer">
+<link rel="canonical" href="https://dtdannen.github.io/writing/dvmdash-update-new-architecture-and-stats-app-launch.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DVMDash Update: New Architecture and Stats App Launch">
+<meta property="og:description" content="DVMDash is back with a completely rebuilt architecture, launching first with a new Stats app that provides flexible time-based metrics and network activity visualization for the DVM ecosystem. This update marks the first phase of a larger redesign that will soon bring back debugging tools and add a new playground for DVM interaction.">
+<meta property="og:url" content="https://dtdannen.github.io/writing/dvmdash-update-new-architecture-and-stats-app-launch.html">
+<meta property="og:image" content="https://dtdannen.github.io/assets/writing/dvmdash-update-new-architecture-and-stats-app-launch-header.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/writing.css">
+</head>
+<body class="editorial"><a class="skip-link" href="#main">Skip to content</a>
+<div class="site-shell">
+<header class="site-header">
+<a class="wordmark" href="../index.html">Dustin Dannenhauer</a>
+<nav id="section-navigation" class="section-nav" aria-label="Sections"><a href="index.html" aria-current="page">Writing</a><a href="../index.html#about">About</a><a href="../index.html#publications">Publications</a><a href="mailto:dustin@delegance.ai">Contact</a></nav>
+</header>
+<main id="main">
+<article class="post">
+<header class="post-head">
+<p class="post-meta"><time datetime="2025-02-14">14 February 2025</time> · 2 min read</p>
+<h1>DVMDash Update: New Architecture and Stats App Launch</h1>
+<p class="post-summary">DVMDash is back with a completely rebuilt architecture, launching first with a new Stats app that provides flexible time-based metrics and network activity visualization for the DVM ecosystem. This update marks the first phase of a larger redesign that will soon bring back debugging tools and add a new playground for DVM interaction.</p>
+</header>
+<figure class="post-image"><img src="../assets/writing/dvmdash-update-new-architecture-and-stats-app-launch-header.webp" alt="" width="1024" height="1024" fetchpriority="high"></figure>
+<div class="prose">
+<p>I&rsquo;m excited to share the first phase of DVMDash&rsquo;s major redesign! After some recent downtime issues (thanks <a href="https://njump.me/[npub1e5tfhk8m65teu…ct7mh9](https://njump.me/npub1e5tfhk8m65teu25dfx8lcvwn4c8ypqjl72u2sh4rt8zy2kss0j5qct7mh9)">npub1e5tfhk8m65teu…ct7mh9</a> and <a href="https://njump.me/[npub1jlrs53pkdfjnt…djynqn](https://njump.me/npub1jlrs53pkdfjnts29kveljul2sm0actt6n8dxrrzqcersttvcuv3qdjynqn)">npub1jlrs53pkdfjnt…djynqn</a> for the heads up), I&rsquo;ve been working on rebuilding DVMDash from the ground up to be more modular, scalable, and reliable.</p>
+<h2 id="whats-live-now-the-stats-app">What&rsquo;s Live Now: The Stats App</h2>
+<p>The first piece of the new DVMDash is our completely rebuilt Stats app. Instead of trying to do everything at once, we&rsquo;re now breaking DVMDash into focused tools. The Stats app brings:</p>
+<ul>
+<li>Flexible time windows (1h, 24h, 7d, 30d) for more relevant insights</li>
+<li>Bar graphs showing activity over time</li>
+<li>Per-DVM and per-Kind detailed metrics</li>
+</ul>
+<p>For those interested in the new backend architecture, check out my <a href="https://njump.me/[naddr1qvzqqqr4gupz…06t7ws](https://njump.me/naddr1qvzqqqr4gupzpkscaxrqqs8nhaynsahuz6c6jy4wtfhkl2x4zkwrmc4cyvaqmxz3qqxnzdenxu6nwd3sxgmryv3506t7ws)">recent post about performance gains</a> describing how horizontal scaling is needed to support the growing DVM ecosystem.</p>
+<h2 id="coming-soon-debug-tools-and-playground">Coming Soon: Debug Tools and Playground</h2>
+<p>You&rsquo;ll notice on the new <a href="https://dvmdash.live">landing page</a> that DVMDash is now split into three main tools:</p>
+<ol>
+<li>Stats (available now!)</li>
+<li>Debug Tools (coming soon)</li>
+<li>Data Vending Playground (coming soon)</li>
+</ol>
+<p>The Debug Tools will bring back the interactive graph-based debugger and event browser, while the Playground will offer a space to experiment with DVMs directly. I&rsquo;m focusing on getting these right rather than rushing them out.</p>
+<h2 id="running-locally">Running Locally</h2>
+<p>Want to try it out? You can clone the repository and run the Stats app locally with a simple </p>
+<pre><code>docker compose --profile all up
+</code></pre>
+<p>then visit <strong>localhost:3000</strong> in your browser.</p>
+<h2 id="whats-next">What&rsquo;s Next</h2>
+<p>My immediate focus is on:</p>
+<ol>
+<li>Polishing the Stats app with new features like:
+   * Sortable tables for easier data analysis
+   * Enhanced DVM profiles with pictures and metadata from relays
+   * More detailed DVM-specific metrics</li>
+<li>Bringing back the debugging tools</li>
+<li>Building out the playground</li>
+</ol>
+<p>This is very much a work in progress, and I appreciate your patience as we rebuild. If you run into any issues or have suggestions, please drop by our GitHub repository.</p>
+</div>
+<footer class="post-foot">
+<p class="post-provenance">Nostr long-form event <code>48d99de58d45…</code> · first published 14 February 2025</p>
+<ul class="post-tags"><li>dvm</li><li>rundvm</li><li>ai</li><li>decentralized-ai</li></ul>
+<p class="post-back"><a href="index.html">← All writing</a></p>
+</footer>
+</article>
+</main>
+<footer class="site-footer"><p>Originally published on Nostr; archived here so it can be read and cited.</p><p>Last Updated: November 2026</p></footer>
+</div>
+</body>
+</html>

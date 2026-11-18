@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DVMs for LLM Tool Use: Democratizing AI Capabilities | Dustin Dannenhauer</title>
+<meta name="description" content="DVMs upgrade tool-using LLMs from closed systems limited by built-in functions to open platforms that can discover and use new capabilities from a global network of developers.">
+<meta name="author" content="Dustin Dannenhauer">
+<link rel="canonical" href="https://dtdannen.github.io/writing/dvms-for-llm-tool-use-democratizing-ai-capabilities.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DVMs for LLM Tool Use: Democratizing AI Capabilities">
+<meta property="og:description" content="DVMs upgrade tool-using LLMs from closed systems limited by built-in functions to open platforms that can discover and use new capabilities from a global network of developers.">
+<meta property="og:url" content="https://dtdannen.github.io/writing/dvms-for-llm-tool-use-democratizing-ai-capabilities.html">
+<meta property="og:image" content="https://dtdannen.github.io/assets/writing/dvms-for-llm-tool-use-democratizing-ai-capabilities-header.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/writing.css">
+</head>
+<body class="editorial"><a class="skip-link" href="#main">Skip to content</a>
+<div class="site-shell">
+<header class="site-header">
+<a class="wordmark" href="../index.html">Dustin Dannenhauer</a>
+<nav id="section-navigation" class="section-nav" aria-label="Sections"><a href="index.html" aria-current="page">Writing</a><a href="../index.html#about">About</a><a href="../index.html#publications">Publications</a><a href="mailto:dustin@delegance.ai">Contact</a></nav>
+</header>
+<main id="main">
+<article class="post">
+<header class="post-head">
+<p class="post-meta"><time datetime="2025-01-31">31 January 2025</time> · 4 min read</p>
+<h1>DVMs for LLM Tool Use: Democratizing AI Capabilities</h1>
+<p class="post-summary">DVMs upgrade tool-using LLMs from closed systems limited by built-in functions to open platforms that can discover and use new capabilities from a global network of developers.</p>
+</header>
+<figure class="post-image"><img src="../assets/writing/dvms-for-llm-tool-use-democratizing-ai-capabilities-header.webp" alt="" width="1024" height="1024" fetchpriority="high"></figure>
+<div class="prose">
+<p>Large Language Models (LLMs) have revolutionized how we interact with artificial intelligence, and one of their most powerful features is tool use - the ability to execute external functions to accomplish tasks. However, the current paradigm of LLM tool use remains largely constrained within closed ecosystems. Data Vending Machines (DVMs) offer an alternative to local, built-in tools through a decentralized marketplace. This decentralized approach enables independent developers to continuously create new tools, letting the entire system evolve based on actual needs.</p>
+<h2 id="understanding-llm-tool-use">Understanding LLM Tool Use</h2>
+<p>Tool use, also known as function calling, enables LLMs to interact with external systems and APIs. Instead of simply generating text, an LLM can choose to execute predefined functions when appropriate. For example, when asked about the weather, rather than making up a response, the model can call a weather API to get accurate, real-time data.</p>
+<p>Traditionally, these tools are implemented as a fixed set of functions within the application&rsquo;s tech stack:</p>
+<pre><code class="language-python"># Traditional function calling example (this exists within a closed tech stack)
+def get_weather(location: str, date: str) -&gt; dict:
+    &quot;&quot;&quot;Get weather information for a specific location and date.&quot;&quot;&quot;
+    api_key = os.environ[&quot;WEATHER_API_KEY&quot;]
+    return weather_api.fetch(location, date, api_key)
+
+# LLM would call this function like:
+result = get_weather(&quot;San Francisco&quot;, &quot;2024-01-31&quot;)
+</code></pre>
+<h2 id="enter-data-vending-machines">Enter Data Vending Machines</h2>
+<p>DVMs represent a paradigm shift in how we think about LLM tool use. Instead of relying on locally defined functions, DVMs provide a decentralized marketplace of capabilities that any LLM can access. These &ldquo;functions&rdquo; exist as independent services on the Nostr network, available to anyone willing to pay for their use.</p>
+<p>Here&rsquo;s how a DVM call might look compared to a traditional function call:</p>
+<pre><code class="language-json"># partial data of an example call to a weather DVM
+{
+  ...
+  &quot;kind&quot;: &quot;5493&quot;,
+  &quot;pubkey&quot;: &quot;&lt;LLM DVM's Npub&gt;&quot;,
+  &quot;tags&quot;: [
+    [&quot;payment&quot;, &quot;100&quot;, &quot;sats/ecash&quot;]
+  ],
+  &quot;content&quot;: {
+    &quot;service&quot;: &quot;weather&quot;,
+    &quot;params&quot;: {
+      &quot;location&quot;: &quot;San Francisco&quot;,
+      &quot;date&quot;: &quot;2024-01-31&quot;
+    }
+  }
+...
+}
+</code></pre>
+<p>Note: This is a motivating example. Weather data DVMs don&rsquo;t exist yet. Most DVM requests don&rsquo;t include payment up front, but with ecash and zaps, it is possible to do. The format of the params may differ as well. </p>
+<h2 id="the-power-of-market-dynamics">The Power of Market Dynamics</h2>
+<p>What makes DVMs particularly compelling for LLM tool use is their market-driven nature:</p>
+<ol>
+<li>
+<p><strong>Competition Drives Innovation</strong>: Multiple DVMs can offer similar services, competing on price, quality, and speed. This natural competition leads to better services and lower prices.</p>
+</li>
+<li>
+<p><strong>Dynamic Expansion</strong>: Unlike traditional tool use where new capabilities must be explicitly added to the system, DVM-enabled LLMs can discover and utilize new tools as they become available in the marketplace.</p>
+</li>
+<li>
+<p><strong>Economic Incentives</strong>: DVM operators are incentivized to create and maintain high-quality services through direct monetary compensation.</p>
+</li>
+</ol>
+<h2 id="implementation-architecture">Implementation Architecture</h2>
+<p>A basic implementation of a user facing DVM-based Tool Use LLM might include:</p>
+<ol>
+<li>
+<p><strong>Manager DVM</strong>: Acts as the central coordinator, maintaining:
+   - Conversation state and history
+   - System prompts and user preferences
+   - Wallet for handling payments to DVMs
+   - Logic for DVM discovery and selection</p>
+</li>
+<li>
+<p><strong>User Interface</strong>: A chat interface that communicates with the manager DVM</p>
+</li>
+<li>
+<p><strong>LLM Service</strong>: Handles the core language model capabilities and decision-making about when to use DVMs</p>
+</li>
+<li>
+<p><strong>DVM Registry</strong>: Maintains a directory of available DVMs and their capabilities (like the data available on DVMDash; see <a href="https://njump.me/naddr1qvzqqqr4gupzpkscaxrqqs8nhaynsahuz6c6jy4wtfhkl2x4zkwrmc4cyvaqmxz3qqxnzdejxv6nyd34xscnjd3sz05q9v">naddr1qvzqqqr4gupz…z05q9v</a>)</p>
+</li>
+</ol>
+<h2 id="advanced-capabilities">Advanced Capabilities</h2>
+<p>The true power of DVM-based tool use emerges when we consider advanced scenarios:</p>
+<ol>
+<li>
+<p><strong>Self-Expanding Capabilities</strong>: When an LLM encounters a request it can&rsquo;t fulfill with existing DVMs, it could:
+   - Create bounties for new DVM development
+   - Fund the development of new capabilities
+   - Coordinate with multiple DVMs to compose novel solutions</p>
+</li>
+<li>
+<p><strong>Economic Agency</strong>: By maintaining its own wallet, the system can:
+   - Generate revenue from user requests
+   - Pay for DVM services
+   - Fund its own expansion and improvement</p>
+</li>
+</ol>
+<h2 id="safety-and-control">Safety and Control</h2>
+<p>While the open nature of DVMs might raise concerns, several safety mechanisms can be implemented:</p>
+<ol>
+<li>
+<p><strong>Human-in-the-Loop Confirmation</strong>: Users must approve DVM calls before execution, similar to how CLI tools ask for confirmation before significant actions.</p>
+</li>
+<li>
+<p><strong>Reputation Systems</strong>: DVMs can build reputation scores based on successful transactions and user feedback.</p>
+</li>
+<li>
+<p><strong>Cost Controls</strong>: Users can set spending limits and approve budgets for specific tasks.</p>
+</li>
+</ol>
+<h2 id="implications-and-future-potential">Implications and Future Potential</h2>
+<p>The combination of Tool Use LLMs and DVMs creates a powerful new paradigm for AI capabilities:</p>
+<ol>
+<li>
+<p><strong>Democratized Innovation</strong>: Anyone can create and monetize new AI capabilities by launching a DVM.</p>
+</li>
+<li>
+<p><strong>Organic Growth</strong>: The system can evolve based on real user needs and market demands.</p>
+</li>
+<li>
+<p><strong>Economic Sustainability</strong>: The payment mechanism ensures sustainable development and maintenance of AI tools.</p>
+</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>By leveraging the Nostr protocol, DVMs enable Tool Use LLMs to access a distributed network of capabilities that would be impossible to build in a traditional, centralized way. For example, a single LLM can seamlessly use specialized tools from hundreds of independent developers - from a service that matches local freelancers to jobs to one that indexes local community events - without any prior coordination. This creates an AI ecosystem where capabilities emerge through market demand rather than central planning, with developers anywhere in the world able to add new tools that every LLM can discover and use.</p>
+</div>
+<footer class="post-foot">
+<p class="post-provenance">Nostr long-form event <code>2ce7d480de19…</code> · first published 31 January 2025</p>
+<ul class="post-tags"><li>dvm</li><li>rundvm</li><li>dvmdash</li><li>llm</li><li>ai</li><li>agi</li></ul>
+<p class="post-back"><a href="index.html">← All writing</a></p>
+</footer>
+</article>
+</main>
+<footer class="site-footer"><p>Originally published on Nostr; archived here so it can be read and cited.</p><p>Last Updated: November 2026</p></footer>
+</div>
+</body>
+</html>

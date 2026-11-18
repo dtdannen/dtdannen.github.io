@@ -172,3 +172,5 @@ body { background: var(--paper); color: var(--ink); }
 .brand-links a:hover { color: var(--accent); }
 .brand-links svg { width: 20px; height: 20px; fill: currentColor; stroke: none; }
 .content-section h2 { overflow-wrap: normal; }
+.writing-callout { margin-top: 20px; font-size: 0.9375rem; color: #52564a; }
+.writing-callout a { color: var(--accent); }

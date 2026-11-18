@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Simpler Way to Build DVMs | Dustin Dannenhauer</title>
+<meta name="description" content="DVMs let you offer APIs without domains or SEO hassles. This practical guide cuts through the complexity with a streamlined approach: just 3 event kinds, simple request/response patterns, and complete code examples to get you running in minutes.">
+<meta name="author" content="Dustin Dannenhauer">
+<link rel="canonical" href="https://dtdannen.github.io/writing/a-simpler-way-to-build-dvms.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Simpler Way to Build DVMs">
+<meta property="og:description" content="DVMs let you offer APIs without domains or SEO hassles. This practical guide cuts through the complexity with a streamlined approach: just 3 event kinds, simple request/response patterns, and complete code examples to get you running in minutes.">
+<meta property="og:url" content="https://dtdannen.github.io/writing/a-simpler-way-to-build-dvms.html">
+<meta property="og:image" content="https://dtdannen.github.io/assets/writing/a-simpler-way-to-build-dvms-header.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/writing.css">
+</head>
+<body class="editorial"><a class="skip-link" href="#main">Skip to content</a>
+<div class="site-shell">
+<header class="site-header">
+<a class="wordmark" href="../index.html">Dustin Dannenhauer</a>
+<nav id="section-navigation" class="section-nav" aria-label="Sections"><a href="index.html" aria-current="page">Writing</a><a href="../index.html#about">About</a><a href="../index.html#publications">Publications</a><a href="mailto:dustin@delegance.ai">Contact</a></nav>
+</header>
+<main id="main">
+<article class="post">
+<header class="post-head">
+<p class="post-meta"><time datetime="2025-08-01">1 August 2025</time> · 12 min read</p>
+<h1>A Simpler Way to Build DVMs</h1>
+<p class="post-summary">DVMs let you offer APIs without domains or SEO hassles. This practical guide cuts through the complexity with a streamlined approach: just 3 event kinds, simple request/response patterns, and complete code examples to get you running in minutes.</p>
+</header>
+<figure class="post-image"><img src="../assets/writing/a-simpler-way-to-build-dvms-header.webp" alt="" width="1024" height="1024" fetchpriority="high"></figure>
+<div class="prose">
+<p>Want to offer an API without dealing with domains or SEO? <code>Data Vending Machine (DVM)</code> is a fun name for what is essentially an API over Nostr. It&rsquo;s incredible because anyone in the world can offer a (free or paid) computational service without having to register a domain name, and without having to do SEO optimization begging for search engines to list them; instead they simply post an announcement to Nostr relays and get listed in online DVM marketplaces.</p>
+<p>Do you want to offer such a service? This is how I would build a DVM today. If you want to know more about how myself and others arrived at these recommendations, check out my other articles!</p>
+<h3 id="what-you-need-to-have-before-building-your-dvm">What you need to have before building your DVM</h3>
+<ol>
+<li>A computational service that you want to offer</li>
+<li>Preferred list of relays (this should be relays where your users are and that are DVM friendly, such as supporting higher rate limits)</li>
+</ol>
+<h3 id="steps-to-build-your-dvm">Steps to build your DVM</h3>
+<ol>
+<li>Generate the Nostr keypair (npub/nsec) for your DVM. Every DVM needs it&rsquo;s own keypair.</li>
+<li>Write the documentation for how people will use your computational service. Specify inputs, outputs, and error messages.</li>
+<li>Host the documentation somewhere (you could broadcast it as a wiki event kind 30818 or at a URL).</li>
+<li>Create the kind 11999 announcement for your DVM for people to use it. It should reference the documentation, along with other data (see example below). Sign the announcement with your DVM nsec and broadcast it to your relays.</li>
+<li>Integrate common Nostr library functions with your computational service, so it can receive job requests and return responses back to users. </li>
+<li>Run your DVM!</li>
+</ol>
+<p><strong>Note on Encryption:</strong> This guide focuses on the core DVM pattern without encryption. An encrypted version using NIP-17/NIP-59 patterns is being developed and will be covered in a follow-up guide. The fundamentals you learn here will directly apply to the encrypted version.</p>
+<p>We&rsquo;ll now walk through each step and give as much context as possible. If you give this to your LLM, it should be able to vibe code this for you. Also, at the end we link to a Github repository with full working examples.</p>
+<h2 id="step-1-of-6-generate-a-nostr-keypair-for-your-dvm">Step 1 of 6: Generate a Nostr Keypair for your DVM</h2>
+<p>There are many libraries and tools to do this, such as rust-nostr (with bindings for Python, C#, Kotlin, Swift, JavaScript), nak the command line swiss army nostr tool, and ndk (javascript).</p>
+<h3 id="option-a-rust-nostr-python-bindings">Option A: rust-nostr python bindings</h3>
+<pre><code>pip install nostr-sdk
+</code></pre>
+<p>After installing, run like:</p>
+<pre><code class="language-python">from nostr_sdk import Keys, SecretKey, PublicKey
+
+# Method 1: Generate completely new random keys
+keys = Keys.generate()
+secret_key = keys.secret_key()
+public_key = keys.public_key()
+
+# Display keys in different formats
+print(&quot;=== New Generated Keys ===&quot;)
+print(f&quot;Secret Key (nsec): {secret_key.to_bech32()}&quot;)
+print(f&quot;Public Key (npub): {public_key.to_bech32()}&quot;)
+print(f&quot;Secret Key (hex):  {secret_key.to_hex()}&quot;)
+print(f&quot;Public Key (hex):  {public_key.to_hex()}&quot;)
+</code></pre>
+<h3 id="option-b-nak-command-line-tool">Option B: nak Command Line Tool</h3>
+<p>nak is a powerful command-line tool for all Nostr operations, including key generation.</p>
+<pre><code class="language-bash"># Install nak (requires Go)
+go install github.com/fiatjaf/nak@latest
+
+# Or download binary from releases
+# https://github.com/fiatjaf/nak/releases
+</code></pre>
+<p>Basic Key Generation</p>
+<pre><code class="language-bash"># Generate a new private key
+nak key generate
+</code></pre>
+<h3 id="option-c-ndk-javascripttypescript">Option C: NDK (JavaScript/TypeScript)</h3>
+<p>NDK is a comprehensive Nostr development kit for JavaScript/TypeScript applications.</p>
+<h3 id="installation">Installation</h3>
+<pre><code class="language-bash">npm install @nostr-dev-kit/ndk
+# or
+yarn add @nostr-dev-kit/ndk
+</code></pre>
+<p>Basic Key Generation (Node.js)</p>
+<pre><code class="language-javascript">import NDK, { NDKPrivateKeySigner } from '@nostr-dev-kit/ndk';
+import { generateSecretKey, getPublicKey } from 'nostr-tools/pure';
+import { nip19 } from 'nostr-tools';
+
+// Method 1: Generate new keys
+function generateNewKeys() {
+    const secretKey = generateSecretKey();
+    const publicKey = getPublicKey(secretKey);
+
+    // Convert to bech32 format
+    const nsec = nip19.nsecEncode(secretKey);
+    const npub = nip19.npubEncode(publicKey);
+
+    console.log('=== New Generated Keys ===');
+    console.log(`Secret Key (hex):  ${Buffer.from(secretKey).toString('hex')}`);
+    console.log(`Secret Key (nsec): ${nsec}`);
+    console.log(`Public Key (hex):  ${publicKey}`);
+    console.log(`Public Key (npub): ${npub}`);
+
+    return { secretKey, publicKey, nsec, npub };
+}
+</code></pre>
+<h2 id="step-2-of-6-write-the-documentation">Step 2 of 6: Write the documentation</h2>
+<p>Your documentation should include descriptions and examples of each step of using the DVM. A good example of this is the <a href="https://vertexlab.io/docs/services/">Vertex DVM documentation</a>.</p>
+<p>Make sure you include the following in your docs: 
+- input format with examples
+- response format with examples
+- error responses with examples
+- any intermediate responses, such as asking for payment</p>
+<h2 id="step-3-of-6-host-your-documentation-online-somewhere">Step 3 of 6: Host your documentation online somewhere</h2>
+<p>If you want to be Nostr only, publish your documentation via a wiki kind event <a href="https://habla.news/u/dustind@dtdannen.github.io/1743798227950">as described here</a> and use a <code>d</code> tag like &lsquo;dvm-documentation&rsquo;</p>
+<p>Otherwise, you can host the documentation at a URL and link that URL in the documentation tag instead.</p>
+<h2 id="step-4-of-6-announce-your-dvm">Step 4 of 6: Announce your DVM</h2>
+<p>Create an event like the following and fill it in with your relevant details:</p>
+<pre><code class="language-json">{
+  &quot;kind&quot;: 11999,
+  &quot;pubkey&quot;: &quot;&lt;dvm-pubkey-generated-in-step-1&gt;&quot;,
+  &quot;created_at&quot;: 1000000000,
+  &quot;tags&quot;: [
+    [&quot;name&quot;, &quot;My Cool DVM&quot;], // Human-readable DVM name
+    [&quot;documentation&quot;, &quot;30818:&lt;dvm-pubkey-generated-in-step-1&gt;:dvm-documentation&quot;], // or url if hosting the old school way
+    [&quot;picture&quot;, &quot; https://example.com/dvm.png&quot;], // DVM or Brand Image
+    [&quot;website&quot;, &quot; https://example.com&quot;], // DVM website if you have one
+    [&quot;support_encryption&quot;], // Presence indicates DVM supports encrypted messages
+    [&quot;t&quot;, &quot;algorithmic-feed&quot;], // self-declared category 
+    [&quot;relays&quot;, &quot;&lt;your-preferred-relay1&gt;&quot;, &quot;&lt;your-preferred-relay2&gt;&quot;, &quot;...&quot;] // relays where users can find your DVM
+  ]
+}
+</code></pre>
+<p><strong>Note:</strong> while the <code>t</code> tag is a self-declared category for your DVM, if you want to compete against other existing DVMs, use the same category that they do. If you&rsquo;re the first one to offer a DVM of this type, choose any category you&rsquo;d like.</p>
+<h2 id="step-5-of-6-integrate-nostr-library-functions-with-your-computational-service">Step 5 of 6: Integrate Nostr Library Functions with Your Computational Service</h2>
+<p>Building a DVM is simpler than you might think. The old spec (original NIP-90) required that you choose a kind number, but this new approach doesn&rsquo;t require choosing any kind numbers. Here are the kinds you should use:</p>
+<ul>
+<li><strong>Kind 11999</strong>: DVM announcement</li>
+<li><strong>Kind 25000</strong>: Both job requests AND responses</li>
+<li><strong>Kind 11998</strong>: Heartbeat events to show your DVM is online</li>
+</ul>
+<p>The beauty of this approach is that responses use the same kind as requests, and all DVMs use the same kind number. You can tell them apart because responses containing a DVM&rsquo;s output will tag the original request event and come from a different pubkey (your DVM&rsquo;s pubkey).</p>
+<p>Here are code snippets to do all the major functions of running your DVM. For a full working example, see <a href="https://github.com/dtdannen/new-dvm-examples">this github repo</a>.</p>
+<h3 id="setting-up-the-foundation">Setting Up the Foundation</h3>
+<p>First, let&rsquo;s install the rust-nostr Python bindings. The python bindings for rust-nostr is the nostr-sdk library:</p>
+<pre><code class="language-bash">pip install nostr-sdk
+</code></pre>
+<h3 id="a-base-dvm-class-for-simpler-code">A Base DVM Class for Simpler Code</h3>
+<p>To make the rest of this guide easier, here is a base class that contains important variables and the client object, which is used by rust-nostr to communicate with relays.</p>
+<pre><code class="language-python">import asyncio
+from typing import Dict, List, Optional
+from nostr_sdk import (
+    Client, Keys, EventBuilder, Filter, Kind, Tag, Timestamp, 
+    Event, HandleNotification, RelayMessage, NostrSigner, RelayUrl
+)
+
+class BaseDVM:
+    &quot;&quot;&quot;
+    Simple DVM implementation using the new streamlined approach
+    &quot;&quot;&quot;
+
+    def __init__(self, 
+                 keys: Keys, 
+                 relay_urls: List[str],
+                 dvm_name: str,
+                 category: str = &quot;general&quot;):
+        self.keys = keys
+        self.relay_urls = relay_urls
+        self.dvm_name = dvm_name
+        self.category = category  # e.g., &quot;translation&quot;, &quot;image-generation&quot;, etc.
+        self.client = None
+
+        # Track processed jobs to avoid duplicates
+        self.processed_jobs = set()
+
+        print(f&quot;Initializing {dvm_name}&quot;)
+        print(f&quot;Category: {category}&quot;)
+        print(f&quot;DVM Public Key: {self.keys.public_key().to_bech32()}&quot;)
+</code></pre>
+<p>Next, let&rsquo;s add the initialization method that connects to relays and starts listening for job requests:</p>
+<pre><code class="language-python">async def initialize(self):
+        &quot;&quot;&quot;Initialize the Nostr client and connect to relays&quot;&quot;&quot;
+        signer = NostrSigner.keys(self.keys)
+        self.client = Client(signer)
+
+        # Add relays
+        for relay_url in self.relay_urls:
+            relay = RelayUrl.parse(relay_url)
+            await self.client.add_relay(relay)
+            print(f&quot;Added relay: {relay_url}&quot;)
+
+        # Connect to relays
+        await self.client.connect()
+        print(&quot;Connected to relays&quot;)
+
+        # Subscribe to job requests
+        await self.subscribe_to_job_requests()
+</code></pre>
+<p>Here&rsquo;s how to subscribe to job requests from users:</p>
+<pre><code class="language-python">    async def subscribe_to_job_requests(self):
+        &quot;&quot;&quot;Subscribe to DVM job requests - both open and targeted requests&quot;&quot;&quot;
+
+        # Filter 1: Open requests (category-based) - any DVM can respond
+        open_filter = (Filter()
+                      .kind(Kind(25000))
+                      .hashtag(self.category)
+                      .since(Timestamp.now()))
+
+        # Filter 2: Targeted requests (p-tag based) - specifically targeting this DVM
+        targeted_filter = (Filter()
+                          .kind(Kind(25000))
+                          .reference(f&quot;p:{self.keys.public_key().to_hex()}&quot;)
+                          .since(Timestamp.now()))
+
+        # Subscribe to both filters
+        open_subscription = await self.client.subscribe(open_filter)
+        targeted_subscription = await self.client.subscribe(targeted_filter)
+
+        print(f&quot;Subscribed to OPEN job requests (category '{self.category}'): {open_subscription}&quot;)
+        print(f&quot;Subscribed to TARGETED job requests (p-tag): {targeted_subscription}&quot;)
+</code></pre>
+<p>The subscription logic is straightforward. We listen for job requests in one of two possible ways:</p>
+<ol>
+<li>Jobs specifically tagged to our DVM&rsquo;s pubkey</li>
+<li>Jobs that use our category as a hashtag</li>
+</ol>
+<p>This gives users multiple ways to find and use your DVM. Feel free to support one or both of these job requests; and make sure to explain your choice(s) in your documentation.</p>
+<h3 id="processing-job-requests">Processing Job Requests</h3>
+<p>Now for the core functionality - processing jobs. The key insight is that both requests and responses use kind 25000, but responses always tag the original request event id. </p>
+<pre><code class="language-python">    def extract_input_from_event(self, event: Event) -&gt; str:
+        &quot;&quot;&quot;Extract input data from job request event&quot;&quot;&quot;
+        # Look for 'i' tag (input tag per DVM conventions)
+        for tag in event.tags():
+            tag_vec = tag.as_vec()
+            if len(tag_vec) &gt;= 2 and tag_vec[0] == &quot;i&quot;:
+                return tag_vec[1]
+
+        # Fallback to event content if no 'i' tag
+        return event.content()
+</code></pre>
+<p>The original DVM spec used <code>i</code> tags to specify inputs. Because this is a simple example, we use it because it&rsquo;s convenient, but you don&rsquo;t have to do it this way. However you decide to do it, you must define and explain it via your documentation.</p>
+<pre><code class="language-python">    def extract_job_params(self, event: Event) -&gt; Dict[str, str]:
+        &quot;&quot;&quot;Extract job parameters from event tags&quot;&quot;&quot;
+        params = {}
+        for tag in event.tags().to_vec():
+            tag_vec = tag.as_vec()
+            if len(tag_vec) &gt;= 3 and tag_vec[0] == &quot;param&quot;:
+                param_name = tag_vec[1]
+                param_value = tag_vec[2]
+                params[param_name] = param_value
+        return params
+
+    def is_job_request(self, event: Event) -&gt; bool:
+        &quot;&quot;&quot;Check if this event is a job request (not a response)&quot;&quot;&quot;
+        # If it tags another event, it's probably a response
+        for tag in event.tags().to_vec():
+            tag_vec = tag.as_vec()
+            if len(tag_vec) &gt;= 2 and tag_vec[0] == &quot;e&quot;:
+                return False
+
+        # If it has input data, it's likely a request
+        return bool(self.extract_input_from_event(event))
+
+    def is_targeted_request(self, event: Event) -&gt; bool:
+        &quot;&quot;&quot;Check if this is a targeted request (has p-tag with our pubkey)&quot;&quot;&quot;
+        our_pubkey_hex = self.keys.public_key().to_hex()
+        for tag in event.tags().to_vec():
+            tag_vec = tag.as_vec()
+            if len(tag_vec) &gt;= 2 and tag_vec[0] == &quot;p&quot; and tag_vec[1] == our_pubkey_hex:
+                return True
+        return False
+</code></pre>
+<p>These helper methods are simply arbitrary examples. You may need different ways to extract the data from job requests, and your documentation should clearly and comprehensively explain how to do so, with examples.</p>
+<h3 id="implementing-your-computational-service">Implementing Your Computational Service</h3>
+<p>Here&rsquo;s where you add your actual business logic. This method should be overridden in your specific DVM implementation:</p>
+<pre><code class="language-python">    async def process_job_request(self, event: Event) -&gt; Optional[str]:
+        &quot;&quot;&quot;Process echo job - just return the input&quot;&quot;&quot;
+        input_data = self.extract_input_from_event(event)
+        if not input_data:
+            return None
+
+        print(f&quot;Echoing: {input_data}&quot;)
+
+        # Just echo back the input
+        return f&quot;Echo: {input_data}&quot;
+</code></pre>
+<h3 id="sending-responses">Sending Responses</h3>
+<p>The response mechanism is elegant in its simplicity. We use the same event kind (25000) but tag the original request, this is the snippet on sending the job result:</p>
+<pre><code class="language-python">    async def send_job_result(self, 
+                            original_event: Event, 
+                            result: str, 
+                            success: bool = True) -&gt; Event:
+        &quot;&quot;&quot;Send job result using the same event kind as requests&quot;&quot;&quot;
+
+        # Create response tags
+        tags = [
+            Tag.parse([&quot;e&quot;, original_event.id().to_hex()]),      # Reference original request
+            Tag.parse([&quot;p&quot;, original_event.author().to_hex()]),  # Tag the requester
+            Tag.parse([&quot;category&quot;, self.category]),               # Our service category
+        ]
+
+        if success:
+            tags.append(Tag.parse([&quot;status&quot;, &quot;success&quot;]))
+        else:
+            tags.append(Tag.parse([&quot;status&quot;, &quot;error&quot;]))
+
+        # Create the response event (same kind as request!)
+        event_builder = EventBuilder(kind=Kind(25000), content=result)
+        # Add tags using the tags method
+        event_builder = event_builder.tags(tags)
+
+        # Send the event
+        await self.client.send_event_builder(event_builder)
+        result_event = event_builder.build(self.keys.public_key())
+
+        return result_event
+</code></pre>
+<p>Notice how clean this is - we use the same event kind but tag the original request with an &ldquo;e&rdquo; tag. The client can easily filter for responses to their specific requests.</p>
+<h3 id="heartbeat-events">Heartbeat Events</h3>
+<p>You should publish a heartbeat event that tells people your DVM is online at regular intervals. A good interval is once every 5 minutes.</p>
+<pre><code class="language-json">{
+    &quot;kind&quot;: 11998,
+    &quot;pubkey&quot;: &quot;&lt;dvm-pubkey-generated-in-step-1&gt;&quot;,
+    &quot;created_at&quot;: 1000000000, // this is what DVM marketplaces will use to decided whether your DVM is online or not
+    &quot;content&quot;: &quot;&lt;status_information&gt;&quot;, // can be as simple as &quot;online&quot;
+}
+</code></pre>
+<p>And here&rsquo;s what that looks like with our running python example:</p>
+<pre><code class="language-python">async def send_heartbeat(self):
+&quot;&quot;&quot;Send periodic heartbeat to indicate DVM is online&quot;&quot;&quot;
+
+    while True:
+        try:
+            # Create heartbeat event (kind 11998)
+            event_builder = EventBuilder(kind=Kind(11998), content=&quot;online&quot;)
+            await self.client.send_event_builder(event_builder)
+            current_time = Timestamp.now()
+            print(f&quot;Sent heartbeat at {current_time.as_secs()}&quot;)
+        except Exception as e:
+            print(f&quot;Error sending heartbeat: {e}&quot;)
+
+            # Wait 10 seconds before next heartbeat (for testing)
+            await asyncio.sleep(10)
+</code></pre>
+<p>That&rsquo;s all the code you need for a working DVM! The new approach makes it incredibly simple to build and deploy computational services on Nostr. Complete working examples can be found here: <a href="https://github.com/dtdannen/new-dvm-examples">https://github.com/dtdannen/new-dvm-examples</a></p>
+<h2 id="step-6-of-6-run-your-dvm">Step 6 of 6: Run Your DVM!</h2>
+<p>Unlike traditional APIs, DVMs offer incredible deployment flexibility - you can literally run one from your laptop. Only the relays see your IP address, giving you better privacy and freedom from traditional hosting requirements. Since we&rsquo;re using ephemeral events (kind 25000), relays won&rsquo;t store the events long-term. You MUST implement local storage to ensure you don&rsquo;t miss events. Remember that relays are transport, not storage. Always assume events can disappear at any time.</p>
+<h3 id="a-quick-note-on-accepting-payments">A quick note on accepting payments</h3>
+<p>The payment landscape over Nostr is constantly innovating. The most common approach today is to generate a lightning payment invoice and include that in an intermediate response to a user&rsquo;s first request. Once the user pays, you do the work and send the final result. Libraries implementing Nostr Wallet Connect are an excellent place to start. </p>
+<p>An alternative is to ask the users to submit eCash with their request. Check out how <a href="https://njump.me/[npub130mznv74rxs03…7ql29s](https://njump.me/npub130mznv74rxs032peqym6g3wqavh472623mt3z5w73xq9r6qqdufs7ql29s)">npub130mznv74rxs03…7ql29s</a> does it with a more traditional API service. </p>
+<p>You can also offer a subscription, in which case make sure you give instructions in your documentation on how users can pay, and make sure you give a valid error response when a user&rsquo;s subscription isn&rsquo;t valid.</p>
+<h3 id="coming-soon-encrypted-dvms">Coming Soon: Encrypted DVMs</h3>
+<p>While this guide covers unencrypted DVMs, stay tuned for examples that implement end-to-end encryption using NIP-17/NIP-59 patterns. This will allow:
+- Privacy of job requests and responses
+- Hidden metadata about who is using which services
+- Enhanced security for sensitive computational tasks</p>
+<p>In the meantime, you can start building with these patterns - the encrypted version will use the same event kinds and basic structure, just with gift-wrapped events for privacy. Heartbeat events and announcements will remain unencrypted.</p>
+</div>
+<footer class="post-foot">
+<p class="post-provenance">Nostr long-form event <code>23f410ed9888…</code> · first published 1 August 2025</p>
+<ul class="post-tags"><li>nostr</li><li>data vending machine</li><li>api</li><li>ecash</li><li>lightning</li><li>nostr wallet connect</li></ul>
+<p class="post-back"><a href="index.html">← All writing</a></p>
+</footer>
+</article>
+</main>
+<footer class="site-footer"><p>Originally published on Nostr; archived here so it can be read and cited.</p><p>Last Updated: November 2026</p></footer>
+</div>
+</body>
+</html>
