@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Announcing DVMDash v0.1 | Dustin Dannenhauer</title>
+<meta name="description" content="This article announces the first version of DVMDash, a monitoring and debugging tool for Data Vending Machine activity on Nostr.">
+<meta name="author" content="Dustin Dannenhauer">
+<link rel="canonical" href="https://dtdannen.github.io/writing/announcing-dvmdash-v0-1.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Announcing DVMDash v0.1">
+<meta property="og:description" content="This article announces the first version of DVMDash, a monitoring and debugging tool for Data Vending Machine activity on Nostr.">
+<meta property="og:url" content="https://dtdannen.github.io/writing/announcing-dvmdash-v0-1.html">
+<meta property="og:image" content="https://dtdannen.github.io/assets/writing/announcing-dvmdash-v0-1-header.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/writing.css">
+<script src="../assets/site.js" defer></script>
+</head>
+<body class="editorial"><a class="skip-link" href="#main">Skip to content</a>
+<div class="site-shell">
+<header class="site-header">
+<div class="header-brand">
+<div class="brand-links"><a href="https://github.com/dtdannen" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a href="https://www.linkedin.com/in/dustindannenhauer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.71 1.637-2.165 3.37-2.165 3.601 0 4.267 2.37 4.267 4.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></div>
+<a class="wordmark" href="../index.html">Dustin Dannenhauer</a>
+</div>
+<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="section-navigation" aria-label="Open navigation" hidden>
+<svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+<svg class="close-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg>
+</button>
+<nav id="section-navigation" class="section-nav" aria-label="Sections"><a href="../index.html#about">About Me</a><a href="index.html" aria-current="page">Writing</a><a href="../index.html#publications">Publications</a><a href="../index.html#service">Service</a><a href="../index.html#conf">Conferences</a><a href="../index.html#misc">Misc</a></nav>
+</header>
+<main id="main">
+<article class="post">
+<header class="post-head">
+<p class="post-meta"><time datetime="2024-08-14">14 August 2024</time> · 7 min read</p>
+<h1>Announcing DVMDash v0.1</h1>
+<p class="post-summary">This article announces the first version of DVMDash, a monitoring and debugging tool for Data Vending Machine activity on Nostr.</p>
+</header>
+<figure class="post-image"><img src="../assets/writing/announcing-dvmdash-v0-1-header.webp" alt="" width="1024" height="1024" fetchpriority="high"></figure>
+<div class="prose">
+<p>After months of development I am excited to officially announce the first version of DVMDash (v0.1). DVMDash is a monitoring and debugging tool for all Data Vending Machine (DVM) activity on Nostr. The website is live at <a href="https://dvmdash.live">https://dvmdash.live</a> and the code is available on <a href="https://github.com/dtdannen/dvmdash">Github</a>.</p>
+<p>Data Vending Machines (<a href="https://github.com/nostr-protocol/nips/blob/master/90.md">NIP-90</a>) offload computationally expensive tasks from relays and clients in a decentralized, free-market manner. They are especially useful for AI tools, algorithmic processing of user’s feeds, and many other use cases.  </p>
+<p>The long term goal of DVMDash is to become 1) a place to easily see what’s happening in the DVM ecosystem with metrics and graphs, and  2) provide real-time tools to help developers monitor, debug, and improve their DVMs.</p>
+<p>DVMDash aims to enable users to answer these types of questions at a glance:
+* What’s the most popular DVM right now?
+* How much money is being paid to image generation DVMs?
+* Is any DVM down at the moment? When was the last time that DVM completed a task?
+* Have any DVMs failed to deliver after accepting payment? Did they refund that payment?
+* How long does it take this DVM to respond?
+* For task X, what’s the average amount of time it takes for a DVM to complete the task?
+* … and more</p>
+<p>For developers working with DVMs there is now a visual, graph based tool that shows DVM-chain activity. DVMs have already started calling other DVMs to assist with work. Soon, we will have humans in the loop monitoring DVM activity, or completing tasks themselves. The activity trace of which DVM is being called as part of a sub-task from another DVM will become complicated, especially because these decisions will be made at run-time and are not known ahead of time. Building a tool to help users and developers understand where a DVM is in this activity trace, whether it’s gotten stuck or is just taking a long time, will be invaluable. <em>For now, the website only shows 1 step of a dvm chain from a user&rsquo;s request.</em></p>
+<p>One of the main designs for the site is that it is highly <em>clickable</em>, meaning whenever you see a DVM, Kind, User, or Event ID, you can click it and open that up in a new page to inspect it.</p>
+<p>Another aspect of this website is that it should be fast. If you submit a DVM request, you should see it in DVMDash within seconds, as well as events from DVMs interacting with your request. I have attempted to obtain DVM events from relays as quickly as possible and compute metrics over them within seconds. </p>
+<p>This project makes use of a nosql database and graph database, currently set to use mongo db and neo4j, for which there are free, community versions that can be run locally.</p>
+<p>Finally, I’m grateful to <a href="https://njump.me/[npub10pensatlcfwkt…yfn34f](https://njump.me/npub10pensatlcfwktnvjjw2dtem38n6rvw8g6fv73h84cuacxn4c28eqyfn34f)">npub10pensatlcfwkt…yfn34f</a> for supporting this project.</p>
+<h2 id="features-in-v01">Features in v0.1:</h2>
+<h3 id="global-network-metrics">Global Network Metrics:</h3>
+<p>This page shows the following metrics:
+- <strong>DVM Requests:</strong> Number of unencrypted DVM requests (kind 5000-5999)
+- <strong>DVM Results:</strong> Number of unencrypted DVM results (kind 6000-6999)
+- <strong>DVM Request Kinds Seen:</strong> Number of unique kinds in the Kind range 5000-5999 (except for known non-DVM kinds 5666 and 5969)
+- <strong>DVM Result Kinds Seen:</strong> Number of unique kinds in the Kind range 6000-6999 (except for known non-DVM kinds 6666 and 6969)
+- <strong>DVM Pub Keys Seen:</strong> Number of unique pub keys that have written a kind 6000-6999 (except for known non-DVM kinds) or have published a kind 31990 event that specifies a ‘k’ tag value between 5000-5999
+- <strong>DVM Profiles (NIP-89) Seen</strong>: Number of 31990 that have a ‘k’ tag value for kind 5000-5999
+- <strong>Most Popular DVM</strong>: The DVM that has produced the most result events (kind 6000-6999)
+- <strong>Most Popular Kind</strong>: The Kind in range 5000-5999 that has the most requests by users.
+- <strong>24 hr DVM Requests</strong>: Number of kind 5000-5999 events created in the last 24 hrs
+- <strong>24 hr DVM Results</strong>: Number of kind 6000-6999 events created in the last 24 hours
+- <strong>1 week DVM Requests</strong>: Number of kind 5000-5999 events created in the last week
+- <strong>1 week DVM Results</strong>: Number of kind 6000-6999 events created in the last week
+- <strong>Unique Users of DVMs</strong>: Number of unique pubkeys of kind 5000-5999 events
+- <strong>Total Sats Paid to DVMs</strong>: 
+  - This is an estimate.
+  - This value is likely a lower bound as it does not take into consideration subscriptions paid to DVMs
+  - This is calculated by counting the values of all invoices where:
+    - A DVM published a kind 7000 event requesting payment and containing an invoice
+    - The DVM later provided a DVM Result for the same job for which it requested payment.
+    - The assumption is that the invoice was paid, otherwise the DVM would not have done the work
+  - Note that because there are multiple ways to pay a DVM such as lightning invoices, ecash, and subscriptions, there is no guaranteed way to know whether a DVM has been paid. Additionally, there is no way to know that a DVM completed the job because some DVMs may not publish a final result event and instead send the user a DM or take some other kind of action.</p>
+<h3 id="recent-requests">Recent Requests:</h3>
+<p>This page shows the most recent 3 events per kind, sorted by created date. You should always be able to find the last 3 events here of all DVM kinds.</p>
+<h3 id="dvm-browser">DVM Browser:</h3>
+<p>This page will either show a profile of a specific DVM, or when no DVM is given in the url, it will show a table of all DVMs with some high level stats. Users can click on a DVM in the table to load the DVM specific page.</p>
+<h3 id="kind-browser">Kind Browser:</h3>
+<p>This page will either show data on a specific kind including all DVMs that have performed jobs of that kind, or when no kind is given, it will show a table summarizing activity across all Kinds.</p>
+<h3 id="debug">Debug:</h3>
+<p>This page shows the graph based visualization of all events, users, and DVMs involved in a single job as well as a table of all events in order from oldest to newest. When no event is given, this page shows the 200 most recent events where the user can click on an event in order to debug that job. The graph-based visualization allows the user to zoom in and out and move around the graph, as well as double click on any node in the graph (except invoices) to open up that event, user, or dvm in a new page. </p>
+<h3 id="playground">Playground:</h3>
+<p>This page is currently under development and may not work at the moment. If it does work, in the current state you can login with NIP-07 extension and broadcast a 5050 event with some text and then the page will show you events from DVMs. This page will be used to interact with DVMs live. A current good alternative to this feature, for some but not all kinds, is <a href="https://vendata.io/">https://vendata.io/</a>.</p>
+<h2 id="looking-to-the-future">Looking to the Future</h2>
+<p>I originally built DVMDash out of Fear-of-Missing-Out (FOMO); I wanted to make AI systems that were comprised of DVMs but my day job was taking up a lot of my time. I needed to know when someone was performing a new task or launching a new AI or Nostr tool!</p>
+<p>I have a long list of DVMs and Agents I hope to build and I needed DVMDash to help me do it; I hope it helps you achieve your goals with Nostr, DVMs, and even AI. To this end, I wish for this tool to be useful to others, so if you would like a feature, please <a href="https://github.com/dtdannen/dvmdash/issues/new">submit a git issue here</a> or <em>note</em> me on Nostr!</p>
+<h3 id="immediate-next-steps">Immediate Next Steps:</h3>
+<ul>
+<li>Refactoring code and removing code that is no longer used</li>
+<li>Improve documentation to run the project locally</li>
+<li>Adding a metric for number of encrypted requests</li>
+<li>Adding a metric for number of encrypted results</li>
+</ul>
+<h3 id="long-term-goals">Long Term Goals:</h3>
+<ul>
+<li>Add more metrics based on community feedback</li>
+<li>Add plots showing metrics over time</li>
+<li>Add support for showing a multi-dvm chain in the graph based visualizer</li>
+<li>Add a real-time mode where the pages will auto update (currently the user must refresh the page)</li>
+<li>&hellip; Add support for user requested features!</li>
+</ul>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>There are some fantastic people working in the DVM space right now. Thank you to <a href="https://njump.me/[npub1drvpzev3syqt0…0eseet](https://njump.me/npub1drvpzev3syqt0kjrls50050uzf25gehpz9vgdw08hvex7e0vgfeq0eseet)">npub1drvpzev3syqt0…0eseet</a> for making python bindings for nostr_sdk and for the recent asyncio upgrades! Thank you to <a href="https://njump.me/[npub1nxa4tywfz9nqp…uaa6q8](https://njump.me/npub1nxa4tywfz9nqp7z9zp7nr7d4nchhclsf58lcqt5y782rmf2hefjquaa6q8)">npub1nxa4tywfz9nqp…uaa6q8</a> for answering lots of questions about DVMs and for making the nostrdvm library. Thank you to <a href="https://njump.me/[npub1l2vyh47mk2p0q…utajft](https://njump.me/npub1l2vyh47mk2p0qlsku7hg0vn29faehy9hy34ygaclpn66ukqp3afqutajft)">npub1l2vyh47mk2p0q…utajft</a> for making the original DVM NIP and <a href="https://vendata.io/">vendata.io</a> which I use all the time for testing!</p>
+<p>P.S. I rushed to get this out in time for Nostriga 2024; code refactoring will be coming :)</p>
+</div>
+<footer class="post-foot">
+<p class="post-provenance">Nostr long-form event <code>dbb5b25b80fb…</code> · first published 14 August 2024</p>
+<ul class="post-tags"><li>dvm</li><li>ai</li><li>nostr</li></ul>
+<p class="post-back"><a href="index.html">← All writing</a></p>
+</footer>
+</article>
+</main>
+<footer class="site-footer"><p>Originally published on Nostr; archived here so it can be read and cited.</p><p>Last Updated: November 2026</p></footer>
+</div>
+</body>
+</html>

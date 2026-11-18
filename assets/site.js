@@ -1,6 +1,11 @@
 // A native anchor remains functional when JavaScript is unavailable.
 const links = [...document.querySelectorAll('.section-nav a')];
-const sections = links.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+// Only in-page anchors can resolve to sections; nav links to other pages are skipped.
+const sections = links
+  .map(link => link.getAttribute('href'))
+  .filter(href => href && href.startsWith('#'))
+  .map(href => document.querySelector(href))
+  .filter(Boolean);
 const header = document.querySelector('.site-header');
 let headerHeight = header?.offsetHeight || 0;
 let observer;
